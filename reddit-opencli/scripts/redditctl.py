@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Small Reddit workflow wrapper around opencli-rs.
+"""Small Reddit workflow wrapper around opencli-rs or OpenCLI.
 
 The script intentionally uses only Python standard library modules so it can be
 bundled inside a Codex skill without extra package installation.
@@ -34,11 +34,23 @@ def utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00", "Z")
 
 
-def find_opencli() -> str:
+def find_backend() -> str:
+    requested = os.environ.get("KK_REDDIT_BACKEND") or os.environ.get("OPENCLI_BACKEND")
+    if requested:
+        if requested not in ("opencli-rs", "opencli"):
+            raise SystemExit("KK_REDDIT_BACKEND must be either opencli-rs or opencli")
+        binary = os.environ.get("KK_REDDIT_CLI") or shutil.which(requested)
+        if not binary:
+            raise SystemExit(f"{requested} is not installed or not on PATH")
+        return binary
+
     binary = os.environ.get("OPENCLI_RS") or shutil.which("opencli-rs")
-    if not binary:
-        raise SystemExit("opencli-rs is not installed or not on PATH")
-    return binary
+    if binary:
+        return binary
+    binary = shutil.which("opencli")
+    if binary:
+        return binary
+    raise SystemExit("Neither opencli-rs nor opencli is installed or on PATH")
 
 
 def run_command(command: list[str], *, expect_json: bool = False) -> Any:
@@ -190,7 +202,7 @@ def post_key(post: dict[str, Any]) -> str:
 
 
 def command_base() -> list[str]:
-    return [find_opencli(), "reddit"]
+    return [find_backend(), "reddit"]
 
 
 def reddit_json(args: list[str]) -> Any:
@@ -364,8 +376,9 @@ def render_thread_markdown(payload: Any) -> str:
 
 
 def cmd_check(args: argparse.Namespace) -> int:
-    binary = find_opencli()
-    print(f"opencli-rs: {binary}")
+    binary = find_backend()
+    print(f"backend: {Path(binary).name}")
+    print(f"binary: {binary}")
     print(run_command([binary, "--version"]).strip())
     print()
     print(run_command([binary, "doctor"]).strip())

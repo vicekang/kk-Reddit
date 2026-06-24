@@ -1,6 +1,7 @@
 # kk-Reddit
 
-`kk-Reddit` is a Codex skill for Reddit workflows powered by `opencli-rs`.
+`kk-Reddit` is a Codex skill for Reddit workflows powered by `opencli-rs`
+or OpenCLI (`opencli`).
 It wraps the existing Reddit CLI commands with safer action handling,
 repeatable research workflows, local monitoring, and clear installation docs.
 
@@ -21,16 +22,18 @@ curl -fsSL https://raw.githubusercontent.com/vicekang/kk-Reddit/main/install.sh 
 
 The installer will:
 
-1. Install `opencli-rs` if it is missing.
-2. Copy the `reddit-opencli` Codex skill into `${CODEX_HOME:-$HOME/.codex}/skills`.
-3. Run `opencli-rs doctor` so you can verify the browser bridge.
+1. Install/check OpenCLI (`opencli`) for the browser bridge.
+2. Check whether `opencli-rs` is available.
+3. Copy the `reddit-opencli` Codex skill into `${CODEX_HOME:-$HOME/.codex}/skills`.
+4. Run diagnostics so you can verify the browser bridge.
 
 After installation, restart or refresh Codex so the skill list is reloaded.
 
 ## Requirements
 
 - macOS or Linux shell.
-- `opencli-rs` as the primary CLI backend.
+- `opencli-rs` as the preferred CLI backend when present.
+- OpenCLI (`opencli`) as the browser bridge provider and fallback backend.
 - Chrome or Chromium.
 - The OpenCLI Chrome extension connected to the local daemon for browser-mode
   Reddit commands.
@@ -39,17 +42,20 @@ After installation, restart or refresh Codex so the skill list is reloaded.
 Check the backend:
 
 ```bash
+opencli --version
+opencli doctor
 opencli-rs --version
-opencli-rs doctor
 ```
 
 If the doctor output says the Chrome extension is not connected, follow
-[Chrome extension setup](docs/CHROME_EXTENSION.md). The recommended upstream
-installer is:
+[Chrome extension setup](docs/CHROME_EXTENSION.md). Install/update OpenCLI with:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nashsu/opencli-rs/main/scripts/install.sh | sh
+npm install -g @jackwener/opencli
 ```
+
+Do not use the old `nashsu/opencli-rs` installer link for this project; that
+path now installs `autocli`, not the `opencli-rs` binary used by this wrapper.
 
 ## Use from Codex
 
@@ -61,10 +67,12 @@ Ask Codex for Reddit work naturally, for example:
 - "Prepare a Reddit comment for this post, show me the exact command, and wait before posting."
 - "Subscribe me to r/rust after showing the action preview."
 
-The skill instructs Codex to use the bundled wrapper:
+The skill instructs Codex to use the bundled wrapper. By default the wrapper
+prefers `opencli-rs` when it exists, then falls back to `opencli`. Force a
+backend with `KK_REDDIT_BACKEND=opencli` or `KK_REDDIT_BACKEND=opencli-rs`.
 
 ```bash
-python3 reddit-opencli/scripts/redditctl.py research --subreddit LocalLLaMA --query "agentic coding" --limit 20 --format md
+KK_REDDIT_BACKEND=opencli python3 reddit-opencli/scripts/redditctl.py research --subreddit LocalLLaMA --query "agentic coding" --limit 20 --format md
 python3 reddit-opencli/scripts/redditctl.py thread "https://www.reddit.com/r/rust/comments/..." --limit 20 --depth 2 --format md
 python3 reddit-opencli/scripts/redditctl.py act upvote "https://www.reddit.com/r/rust/comments/..." --yes
 ```
@@ -83,10 +91,11 @@ Codex should only add `--yes` after the user confirms the exact action.
 
 ## Do I need a Chrome extension?
 
-Yes for browser-mode Reddit commands. On this machine, `opencli-rs reddit ...`
-requires the OpenCLI Chrome extension to connect to the local daemon. The skill
-can install/check `opencli-rs`, but Chrome extension installation still needs
-normal browser extension setup because Chrome intentionally protects that flow.
+Yes for browser-mode Reddit commands. The extension is named **OpenCLI** and is
+part of the OpenCLI browser bridge used by `opencli`. `opencli-rs` can use this
+browser bridge, but the Chrome extension itself is not called `opencli-rs` or
+AutoCLI. Chrome extension installation still needs normal browser extension
+setup because Chrome intentionally protects that flow.
 
 Can this project ship a Reddit-specific extension? Yes, but it should be a
 separate milestone. A custom extension only helps `opencli-rs` if it implements

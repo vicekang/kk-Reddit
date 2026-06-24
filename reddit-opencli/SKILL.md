@@ -1,12 +1,13 @@
 ---
 name: reddit-opencli
-description: Use this skill for Reddit workflows through opencli-rs, including subreddit and keyword research, frontpage/popular scans, reading posts and comments, monitoring new Reddit posts, and account write actions such as commenting, upvoting, downvoting, saving, subscribing, and unsubscribing. Trigger when the user asks Codex to browse, research, summarize, monitor, or interact with Reddit, especially when Chrome login state or opencli-rs should be reused.
+description: Use this skill for Reddit workflows through opencli-rs or OpenCLI, including subreddit and keyword research, frontpage/popular scans, reading posts and comments, monitoring new Reddit posts, and account write actions such as commenting, upvoting, downvoting, saving, subscribing, and unsubscribing. Trigger when the user asks Codex to browse, research, summarize, monitor, or interact with Reddit, especially when Chrome login state, opencli-rs, or OpenCLI should be reused.
 ---
 
 # Reddit OpenCLI
 
-Use `opencli-rs` as the Reddit backend. Prefer the bundled wrapper scripts for
-repeatable workflows and safer writes.
+Use the bundled wrapper scripts for repeatable workflows and safer writes.
+The wrapper prefers `opencli-rs` when present and falls back to `opencli`.
+Set `KK_REDDIT_BACKEND=opencli` or `KK_REDDIT_BACKEND=opencli-rs` to force one.
 
 ## First checks
 
@@ -14,10 +15,10 @@ Run the verifier before any serious work:
 
 ```bash
 bash reddit-opencli/scripts/ensure_opencli.sh
-opencli-rs doctor
+opencli doctor
 ```
 
-If `opencli-rs doctor` reports that the Chrome extension is not connected, stop
+If `opencli doctor` reports that the Chrome extension is not connected, stop
 and tell the user to enable the OpenCLI Chrome extension. Reddit browser-mode
 commands will not work reliably without that bridge.
 
@@ -91,7 +92,7 @@ Never execute a write action without showing the user:
 
 - the exact target post/subreddit
 - the comment text when applicable
-- the exact `opencli-rs` command that will run
+- the exact CLI command that will run
 - the account/platform risk that Reddit automation can trigger
 
 First generate a preview without `--yes`:
@@ -112,4 +113,3 @@ python3 reddit-opencli/scripts/redditctl.py act comment "<post-url-or-id>" --tex
 If a Reddit command fails because the Chrome extension is missing or the user is
 not logged in, do not silently switch to unrelated web scraping. Report the
 blocked state and ask the user to connect Chrome/OpenCLI or log in to Reddit.
-

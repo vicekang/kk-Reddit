@@ -17,6 +17,12 @@ bash reddit-opencli/scripts/ensure_opencli.sh
 python3 reddit-opencli/scripts/redditctl.py check
 ```
 
+Force the OpenCLI backend:
+
+```bash
+KK_REDDIT_BACKEND=opencli python3 reddit-opencli/scripts/redditctl.py check
+```
+
 Optional smoke test:
 
 ```bash
@@ -202,4 +208,3 @@ opencli-rs reddit upvote <post-id> --direction up -f json
 opencli-rs reddit save <post-id> -f json
 opencli-rs reddit subscribe rust -f json
 ```
-

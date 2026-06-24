@@ -2,10 +2,10 @@
 
 This repository does not ship a replacement Chrome extension in v1.
 
-Reason: the `opencli-rs reddit ...` commands depend on the OpenCLI browser
-bridge. A separate Reddit content-script extension would not automatically be
-used by `opencli-rs` unless it implements the same daemon protocol or `opencli-rs`
-adds support for it.
+Reason: Reddit browser-mode commands depend on the OpenCLI browser bridge. A
+separate Reddit content-script extension would not automatically be used by
+`opencli` or `opencli-rs` unless it implements the same daemon protocol or the
+CLI backend adds support for it.
 
 ## Possible v2 scope
 
@@ -20,7 +20,7 @@ A Reddit-optimized extension could add:
 ## Integration options
 
 1. Upstream bridge-compatible extension
-   - Best fit if the goal is to keep using `opencli-rs reddit ...`.
+   - Best fit if the goal is to keep using `opencli reddit ...` or `opencli-rs reddit ...`.
    - Requires matching the OpenCLI daemon protocol.
 
 2. Companion extension plus opencli-rs adapter changes
@@ -32,4 +32,3 @@ A Reddit-optimized extension could add:
    - Not a direct replacement for this skill's `opencli-rs` backend.
 
 For now, use the OpenCLI extension documented in `docs/CHROME_EXTENSION.md`.
-

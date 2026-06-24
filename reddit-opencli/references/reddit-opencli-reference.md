@@ -5,14 +5,17 @@ installation troubleshooting, or write-action handling.
 
 ## Backend
 
-Primary backend:
+Backends:
 
 ```bash
 opencli-rs reddit ...
+opencli reddit ...
 ```
 
-Do not prefer browser automation over `opencli-rs` for Reddit unless the
-OpenCLI path is blocked and the user approves a fallback.
+The wrapper prefers `opencli-rs` when present and falls back to `opencli`.
+Set `KK_REDDIT_BACKEND=opencli` or `KK_REDDIT_BACKEND=opencli-rs` to force one.
+Do not prefer browser automation over these CLIs for Reddit unless the OpenCLI
+path is blocked and the user approves a fallback.
 
 ## Useful direct commands
 
@@ -32,7 +35,7 @@ opencli-rs reddit user-comments "spez" --limit 20 -f json
 
 ## Write command mapping
 
-`opencli-rs` write commands use a post id/fullname for post actions.
+Both CLI write command families use a post id/fullname for post actions.
 The wrapper accepts a full Reddit URL and extracts the post id when possible.
 
 ```bash
@@ -51,7 +54,7 @@ The skill must show a preview and wait for explicit confirmation before adding
 
 ## Chrome extension
 
-Reddit commands currently run through browser mode. If `opencli-rs doctor`
+Reddit commands currently run through browser mode. If `opencli doctor`
 shows:
 
 ```text
@@ -65,11 +68,14 @@ Chrome extension not connected
 ```
 
 Ask the user to install/enable the OpenCLI Chrome extension and open a Chrome
-window. The recommended upstream installer is:
+window. The recommended OpenCLI installer is:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/nashsu/opencli-rs/main/scripts/install.sh | sh
+npm install -g @jackwener/opencli
 ```
+
+Do not use the old `nashsu/opencli-rs` installer link here; it now installs
+`autocli`, not `opencli-rs`.
 
 After running it, check for extension assets with:
 
