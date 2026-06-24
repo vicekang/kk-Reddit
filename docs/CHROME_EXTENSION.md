@@ -25,6 +25,22 @@ Chrome extension not connected
 
 ## Install or enable the OpenCLI extension
 
+Recommended source:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nashsu/opencli-rs/main/scripts/install.sh | sh
+```
+
+That installer is the supported way to install/update `opencli-rs` and prepare
+the OpenCLI browser extension assets. Upstream project:
+[nashsu/opencli-rs](https://github.com/nashsu/opencli-rs).
+
+After installation, check whether the extension folder exists:
+
+```bash
+find ~/.opencli/extensions -maxdepth 1 -type d -name 'opencli-extension-v*' -print
+```
+
 If `opencli-rs` has already downloaded the extension, it is commonly located at:
 
 ```text
@@ -76,4 +92,3 @@ A Reddit-specific extension would need one of these paths:
 
 For v1, `kk-Reddit` uses the official OpenCLI browser bridge and focuses on the
 skill, wrapper, safety gates, and documentation.
-

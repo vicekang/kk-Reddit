@@ -65,7 +65,19 @@ Chrome extension not connected
 ```
 
 Ask the user to install/enable the OpenCLI Chrome extension and open a Chrome
-window. If the local extension package exists, it is usually under:
+window. The recommended upstream installer is:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nashsu/opencli-rs/main/scripts/install.sh | sh
+```
+
+After running it, check for extension assets with:
+
+```bash
+find ~/.opencli/extensions -maxdepth 1 -type d -name 'opencli-extension-v*' -print
+```
+
+If the local extension package exists, it is usually under:
 
 ```text
 ~/.opencli/extensions/opencli-extension-v*/ 
@@ -101,4 +113,3 @@ payload and summarize cautiously.
   stderr/stdout.
 - If a read command returns empty data, verify subreddit/query spelling and run
   a smaller smoke test.
-

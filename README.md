@@ -44,7 +44,12 @@ opencli-rs doctor
 ```
 
 If the doctor output says the Chrome extension is not connected, follow
-[Chrome extension setup](docs/CHROME_EXTENSION.md).
+[Chrome extension setup](docs/CHROME_EXTENSION.md). The recommended upstream
+installer is:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nashsu/opencli-rs/main/scripts/install.sh | sh
+```
 
 ## Use from Codex
 
@@ -111,4 +116,3 @@ kk-Reddit/
 ## License
 
 MIT
-
