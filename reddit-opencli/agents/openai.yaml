@@ -1,5 +1,5 @@
 interface:
   display_name: "Reddit OpenCLI"
-  short_description: "Research and act on Reddit through opencli-rs"
-  default_prompt: "Use opencli-rs for this Reddit workflow, preview any write action, and summarize the result with source links."
+  short_description: "Research and act on Reddit through OpenCLI"
+  default_prompt: "Use OpenCLI for this Reddit workflow, preview any write action, and summarize the result with source links."
 

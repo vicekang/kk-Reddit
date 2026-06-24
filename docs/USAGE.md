@@ -17,12 +17,6 @@ bash reddit-opencli/scripts/ensure_opencli.sh
 python3 reddit-opencli/scripts/redditctl.py check
 ```
 
-Force the OpenCLI backend:
-
-```bash
-KK_REDDIT_BACKEND=opencli python3 reddit-opencli/scripts/redditctl.py check
-```
-
 Optional smoke test:
 
 ```bash
@@ -194,17 +188,17 @@ python3 reddit-opencli/scripts/redditctl.py act subscribe rust --yes
 python3 reddit-opencli/scripts/redditctl.py act unsubscribe rust --yes
 ```
 
-## Direct opencli-rs commands
+## Direct opencli commands
 
 Use these when you need to bypass the wrapper:
 
 ```bash
-opencli-rs reddit hot --subreddit rust --limit 20 -f json
-opencli-rs reddit search "local llm" --limit 20 --sort relevance --time month -f json
-opencli-rs reddit subreddit LocalLLaMA --sort top --time week --limit 20 -f json
-opencli-rs reddit read "<post-url-or-id>" --limit 25 --depth 2 --sort best -f json
-opencli-rs reddit comment <post-id> "comment text" -f json
-opencli-rs reddit upvote <post-id> --direction up -f json
-opencli-rs reddit save <post-id> -f json
-opencli-rs reddit subscribe rust -f json
+opencli reddit hot --subreddit rust --limit 20 -f json
+opencli reddit search "local llm" --limit 20 --sort relevance --time month -f json
+opencli reddit subreddit LocalLLaMA --sort top --time week --limit 20 -f json
+opencli reddit read "<post-url-or-id>" --limit 25 --depth 2 --sort best -f json
+opencli reddit comment <post-id> "comment text" -f json
+opencli reddit upvote <post-id> --direction up -f json
+opencli reddit save <post-id> -f json
+opencli reddit subscribe rust -f json
 ```

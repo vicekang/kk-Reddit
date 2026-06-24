@@ -61,35 +61,18 @@ resolve_repo_root() {
   download_repo
 }
 
-install_opencli_bridge() {
+install_opencli() {
   if command -v opencli >/dev/null 2>&1; then
     log "opencli found: $(command -v opencli)"
     opencli --version || true
     return
   fi
 
-  if ! command -v npm >/dev/null 2>&1; then
-    log "opencli is missing and npm is not available; skipping automatic opencli install"
-    return
-  fi
-
+  need_cmd npm
   log "opencli not found. Installing @jackwener/opencli with npm."
-  if npm install -g @jackwener/opencli; then
-    log "opencli installed: $(command -v opencli)"
-  else
-    log "opencli install failed; install @jackwener/opencli manually if browser bridge setup is needed"
-  fi
-}
-
-check_opencli_rs() {
-  if command -v opencli-rs >/dev/null 2>&1; then
-    log "opencli-rs found: $(command -v opencli-rs)"
-    opencli-rs --version || true
-    return
-  fi
-
-  log "opencli-rs is not installed. The wrapper can use opencli with KK_REDDIT_BACKEND=opencli."
-  log "Not running the old opencli-rs installer because that upstream path now installs autocli."
+  npm install -g @jackwener/opencli
+  command -v opencli >/dev/null 2>&1 || die "opencli is still missing after npm install"
+  log "opencli installed: $(command -v opencli)"
 }
 
 main() {
@@ -97,32 +80,26 @@ main() {
   repo_root="$(resolve_repo_root)"
   [ -f "$repo_root/${SKILL_NAME}/SKILL.md" ] || die "Missing ${SKILL_NAME}/SKILL.md in ${repo_root}"
 
-  install_opencli_bridge
-  check_opencli_rs
+  install_opencli
 
   mkdir -p "$DEST_ROOT"
   rm -rf "$DEST_ROOT/$SKILL_NAME"
   cp -R "$repo_root/$SKILL_NAME" "$DEST_ROOT/$SKILL_NAME"
   log "Installed Codex skill to $DEST_ROOT/$SKILL_NAME"
 
-  if command -v opencli >/dev/null 2>&1; then
-    log "Running opencli doctor"
-    opencli doctor || true
-  elif command -v opencli-rs >/dev/null 2>&1; then
-    log "Running opencli-rs doctor"
-    opencli-rs doctor || true
-  fi
+  log "Running opencli doctor"
+  opencli doctor || true
 
   cat <<'EOF'
 
 Next steps:
 1. Restart or refresh Codex so it discovers the reddit-opencli skill.
 2. Run: opencli doctor
-3. Optional: run opencli-rs doctor if you use the opencli-rs backend.
-4. If "Chrome extension connected" is not checked, install/enable the OpenCLI Chrome extension.
-   See docs/CHROME_EXTENSION.md in this repository for the exact flow.
+3. If the Chrome extension is missing or unstable, enable/update the OpenCLI Chrome extension.
+   See docs/CHROME_EXTENSION.md in this repository.
 
 EOF
 }
 
 main "$@"
+

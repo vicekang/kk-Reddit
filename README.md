@@ -1,20 +1,12 @@
 # kk-Reddit
 
-`kk-Reddit` is a Codex skill for Reddit workflows powered by `opencli-rs`
-or OpenCLI (`opencli`).
-It wraps the existing Reddit CLI commands with safer action handling,
-repeatable research workflows, local monitoring, and clear installation docs.
+`kk-Reddit` is a Codex skill for Reddit workflows powered only by
+OpenCLI (`opencli`).
 
-The skill is designed for:
+It wraps `opencli reddit ...` with safer write handling, repeatable research
+workflows, local watch state, and clear setup docs.
 
-- Reddit research across subreddits, search queries, frontpage, and popular.
-- Thread reading with comment limits, depth, sort order, and Markdown output.
-- Watch workflows that show what is new since the last run.
-- First-class write actions: comment, upvote, downvote, unvote, save, unsave,
-  subscribe, and unsubscribe.
-- Explicit safety gates before any Reddit write action is executed.
-
-## Quick install
+## Quick Install
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/vicekang/kk-Reddit/main/install.sh | bash
@@ -22,88 +14,79 @@ curl -fsSL https://raw.githubusercontent.com/vicekang/kk-Reddit/main/install.sh 
 
 The installer will:
 
-1. Install/check OpenCLI (`opencli`) for the browser bridge.
-2. Check whether `opencli-rs` is available.
-3. Copy the `reddit-opencli` Codex skill into `${CODEX_HOME:-$HOME/.codex}/skills`.
-4. Run diagnostics so you can verify the browser bridge.
+1. Install/check OpenCLI (`opencli`) with `npm install -g @jackwener/opencli`.
+2. Copy the `reddit-opencli` skill into `${CODEX_HOME:-$HOME/.codex}/skills`.
+3. Run `opencli doctor` to verify the browser bridge.
 
-After installation, restart or refresh Codex so the skill list is reloaded.
+Restart or refresh Codex after installation so it discovers the skill.
 
 ## Requirements
 
 - macOS or Linux shell.
-- `opencli-rs` as the preferred CLI backend when present.
-- OpenCLI (`opencli`) as the browser bridge provider and fallback backend.
+- Node/npm for installing OpenCLI when it is missing.
 - Chrome or Chromium.
-- The OpenCLI Chrome extension connected to the local daemon for browser-mode
-  Reddit commands.
+- The OpenCLI Chrome extension connected to the local OpenCLI daemon.
 - A Reddit login in Chrome for account-specific reads and all write actions.
 
-Check the backend:
+Check setup:
 
 ```bash
 opencli --version
 opencli doctor
-opencli-rs --version
 ```
 
-If the doctor output says the Chrome extension is not connected, follow
-[Chrome extension setup](docs/CHROME_EXTENSION.md). Install/update OpenCLI with:
+If the doctor output says the Chrome extension is missing or unstable, follow
+[Chrome extension setup](docs/CHROME_EXTENSION.md).
 
-```bash
-npm install -g @jackwener/opencli
-```
+## What It Does
 
-Do not use the old `nashsu/opencli-rs` installer link for this project; that
-path now installs `autocli`, not the `opencli-rs` binary used by this wrapper.
+- Research posts across subreddits, search queries, frontpage, and popular.
+- Read posts and comments with limit, depth, sort, and Markdown/JSON output.
+- Watch Reddit sources and show posts that are new since the last run.
+- Preview and execute first-class write actions:
+  comment, upvote, downvote, unvote, save, unsave, subscribe, unsubscribe.
+- Require explicit confirmation before any write action executes.
 
-## Use from Codex
+## Use From Codex
 
-Ask Codex for Reddit work naturally, for example:
+Ask naturally:
 
 - "Use reddit-opencli to find the top discussions about local LLMs in r/LocalLLaMA and r/selfhosted."
 - "Read this Reddit thread and summarize the strongest objections."
-- "Watch r/openai and r/MachineLearning for new high-engagement posts about agents."
+- "Watch r/openai for new high-engagement posts about agents."
 - "Prepare a Reddit comment for this post, show me the exact command, and wait before posting."
 - "Subscribe me to r/rust after showing the action preview."
 
-The skill instructs Codex to use the bundled wrapper. By default the wrapper
-prefers `opencli-rs` when it exists, then falls back to `opencli`. Force a
-backend with `KK_REDDIT_BACKEND=opencli` or `KK_REDDIT_BACKEND=opencli-rs`.
+The skill uses the bundled wrapper:
 
 ```bash
-KK_REDDIT_BACKEND=opencli python3 reddit-opencli/scripts/redditctl.py research --subreddit LocalLLaMA --query "agentic coding" --limit 20 --format md
+python3 reddit-opencli/scripts/redditctl.py research --subreddit LocalLLaMA --query "agentic coding" --limit 20 --format md
 python3 reddit-opencli/scripts/redditctl.py thread "https://www.reddit.com/r/rust/comments/..." --limit 20 --depth 2 --format md
 python3 reddit-opencli/scripts/redditctl.py act upvote "https://www.reddit.com/r/rust/comments/..." --yes
 ```
 
 For full command examples, see [Usage guide](docs/USAGE.md).
 
-## Safety model
+## Safety Model
 
 Read-only commands can run directly. Write actions require a two-step flow:
 
-1. Preview the target, text, and exact `opencli-rs` command.
+1. Preview the target, text, risk, and exact `opencli reddit ...` command.
 2. Execute only after the user explicitly confirms.
 
 The wrapper will not execute a write action unless `--yes` is supplied.
 Codex should only add `--yes` after the user confirms the exact action.
 
-## Do I need a Chrome extension?
+## Chrome Extension
 
-Yes for browser-mode Reddit commands. The extension is named **OpenCLI** and is
-part of the OpenCLI browser bridge used by `opencli`. `opencli-rs` can use this
-browser bridge, but the Chrome extension itself is not called `opencli-rs` or
-AutoCLI. Chrome extension installation still needs normal browser extension
-setup because Chrome intentionally protects that flow.
+The browser extension is named **OpenCLI**. It is the browser bridge used by
+`opencli`; this project does not ship a separate Reddit-specific Chrome
+extension in v1.
 
-Can this project ship a Reddit-specific extension? Yes, but it should be a
-separate milestone. A custom extension only helps `opencli-rs` if it implements
-the same bridge protocol or if `opencli-rs` is updated to call it. A generic
-content script alone will not automatically make `opencli-rs reddit ...` use
-it. See [extension design notes](extension/README.md).
+See [Chrome extension setup](docs/CHROME_EXTENSION.md) and
+[extension notes](extension/README.md).
 
-## Repository layout
+## Repository Layout
 
 ```text
 kk-Reddit/
@@ -125,3 +108,4 @@ kk-Reddit/
 ## License
 
 MIT
+
